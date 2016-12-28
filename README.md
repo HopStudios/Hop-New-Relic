@@ -1,8 +1,15 @@
 # Hop New Relic - A New Relic addon for ExpressionEngine CMS
 
-## Third party lib
+## Documentation
 
-[https://github.com/chartjs/Chart.js](https://github.com/chartjs/Chart.js) - Thanks to them !
+* Install the add-on
+* Login to your New Relic account on [https://newrelic.com](https://newrelic.com)
+* Once logged-ed, go to your *account settings*. In the left sidebar menu, go to *API Keys*
+* Copy your API key (generate one if you don't have any)
+* Back to EE, go to Hop New Relic add-on settings and paste your New Relic API key. Save the settings
+* Now that the key is saved, the *New Relic App* dropdown should be populated, select an app and save the settings
+* Now that the app is saved, the *New Relic Server* dropdown should be populated, select one and save the settings (if it's already selected, save the settings anyway)
+* Go back to the add-on main page, it should display the app and server summary data
 
 ## Want more ?
 
@@ -51,3 +58,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMP
 Limitations Of Liability
 
 YOU ASSUME ALL RISK ASSOCIATED WITH THE INSTALLATION AND USE OF THE SOFTWARE. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS OF THE SOFTWARE BE LIABLE FOR CLAIMS, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE. LICENSE HOLDERS ARE SOLELY RESPONSIBLE FOR DETERMINING THE APPROPRIATENESS OF USE AND ASSUME ALL RISKS ASSOCIATED WITH ITS USE, INCLUDING BUT NOT LIMITED TO THE RISKS OF PROGRAM ERRORS, DAMAGE TO EQUIPMENT, LOSS OF DATA OR SOFTWARE PROGRAMS, OR UNAVAILABILITY OR INTERRUPTION OF OPERATIONS.
+
+## Third party lib
+
+[https://github.com/chartjs/Chart.js](https://github.com/chartjs/Chart.js) - Thanks to them !
