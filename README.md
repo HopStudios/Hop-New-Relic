@@ -11,6 +11,18 @@
 * Now that the app is saved, the *New Relic Server* dropdown should be populated, select one and save the settings (if it's already selected, save the settings anyway)
 * Go back to the add-on main page, it should display the app and server summary data
 
+## Template tags
+
+If you ever need to display the data summary on the front-end, the add-on provides 3 tags for that:
+
+* *{exp:hop_new_relic:app_data ttl="300"}*
+* *{exp:hop_new_relic:server_data ttl="300"}*
+* *{exp:hop_new_relic:enduser_data ttl="300"}*
+
+The *ttl* parameter is optionnary, it represents the time (in seconds) the data will be kept in cache before being refreshed. The minimum value is 30 seconds. The default value is 300.
+
+A tag will generate something like `<span>111 ms</span> <span>131 rpm</span> <span>0 err%</span> <span>apdex 0.99</span>`. It's up to you to put-in in a `div` and style it the way you want.
+
 ## Want more ?
 
 Take a look at our [ExpressionEngine Add-Ons](http://www.hopstudios.com/software)
