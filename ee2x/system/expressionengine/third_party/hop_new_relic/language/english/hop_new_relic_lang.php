@@ -51,6 +51,7 @@ $lang = array(
 	'metric_value'						=> 'Metric value',
 	'get_metric_names_app_error'		=> 'Couldn\'t retrieve the different metrics available for that app',
 	'get_metric_names_server_error'		=> 'Couldn\'t retrieve the different metrics available for that server',
+	'delete_selected'					=> 'Delete selected',
 
 	'new_custom_datasets'				=> 'New Custom Dataset',
 	'custom_dataset_name'				=> 'Custom Dataset Name',
@@ -60,5 +61,6 @@ $lang = array(
 	'app_metric_data'					=> 'App Metric Data',
 	'app_metric_data_desc'				=> 'Choose what app data to retrieve',
 	'server_metric_data'				=> 'Server Metric Data',
-	'server_metric_data_desc'			=> 'Choose what server data to retrieve'
+	'server_metric_data_desc'			=> 'Choose what server data to retrieve',
+	'error_no_metric_type_selected'		=> 'No Metric type selected',
 );

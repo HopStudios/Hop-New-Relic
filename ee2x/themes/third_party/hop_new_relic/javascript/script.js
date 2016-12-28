@@ -1,21 +1,8 @@
-// For each canvas we find, we look into our datasets and see if there's any data corresponding
-// $graphs = $('canvas[data-graph-dataset]');
-// for (var i = 0; i < $graphs.length; i++) {
-// 	$canvas = $($graphs[i]);
-// 	// Set canvas width using dynamic JS to avoid issue with ChartJS
-// 	$canvas.width($canvas.parent().width()-150);
-// 	if (datasets[$canvas.data('graph-dataset')] !== "undfined") {
-// 		var ctx = $canvas.get(0).getContext("2d");
-// 
-// 		var lineChart = new Chart(ctx).Line(datasets[$canvas.data('graph-dataset')], {responsive: true, datasetStroke : false});
-// 	}
-// }
-
 
 $(function() {
 	var ctx = document.getElementById("nr-chart");
 	var lineChart = null;
-	
+
 	$('.chart-form').on('submit', function(e) {
 		$(this).find('.btn.submit').addClass('work');
 		$('#nr-data-error').hide();
@@ -76,6 +63,12 @@ $(function() {
 		e.preventDefault();
 	});
 
+	$('select[name="metric_type"]').on('change', function(e) {
+		$('.data-select').hide();
+		if ($(this).val() != "") {
+			$('.'+$(this).val()+'-data-select').show();
+		}
+	});
 
 	$('select[name="custom_dataset_app_metric_name"]').on('change', function(e) {
 		// console.log($(this).val());

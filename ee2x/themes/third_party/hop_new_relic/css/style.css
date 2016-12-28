@@ -21,3 +21,5 @@
 
 .chart-container .form { margin: 15px; }
 #nr-data-error { display: none; }
+
+.data-select { display: none; }

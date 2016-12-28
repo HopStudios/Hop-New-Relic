@@ -13,6 +13,7 @@ class Hop_new_relic_mcp
 		ee()->cp->set_right_nav(array(
 			lang('hop_new_relic_module_name')	=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME,
 			lang('settings')					=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=settings',
+			lang('custom_datasets')				=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=custom_datasets',
 		));
 
 		//Load our magnificent CSS
@@ -387,74 +388,27 @@ class Hop_new_relic_mcp
 	function custom_datasets()
 	{
 		$this->build_nav();
+		ee()->load->library('table');
+		ee()->load->helper('form');
+
 		$vars = array();
 
 		$data_helper = new Hop_new_relic_data_helper();
 		$user_datasets = $data_helper->get_user_custom_datasets();
 
 		$vars['user_datasets'] = $user_datasets;
+		$vars['form_hidden'] = NULL;
+		$vars['options'] = array(
+			'delete' => lang('delete_selected')
+		);
 		$vars['cp_page_title'] = lang('custom_datasets');
-		$vars['base_url'] = ee('CP/URL', 'addons/settings/'.HOP_NEW_RELIC_NAME.'/custom_datasets')->compile();
+		$vars['base_url'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=custom_datasets';
+		$vars['action_url'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=custom_datasets_remove';
 		$vars['save_btn_text'] = lang('save');
 		$vars['save_btn_text_working'] = lang('saving');
-		$vars['form_url'] = ee('CP/URL')->make('addons/settings/'.HOP_NEW_RELIC_NAME.'/custom_datasets_remove');
+		$vars['new_url'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=new_custom_dataset';
 
-		// Specify other options
-		$table = ee('CP/Table', array('sortable' => FALSE));
-		$table->setColumns(
-			array(
-				'id',
-				'name',
-				lang('metric_name'),
-				lang('metric_value'),
-				array(
-					'type'  => Table::COL_CHECKBOX
-				)
-			)
-		);
-
-		$data = array();
-		foreach ($user_datasets as $key => $user_dataset)
-		{
-			$data[] = array(
-				$key,
-				$user_dataset['title'],
-				$user_dataset['names'][0],
-				$user_dataset['values'][0],
-				array(
-					'name' => 'datasets[]',
-					'value' => $key,
-					'data'  => array(
-						'confirm' => lang('dataset') . ': <b>' . htmlentities($user_dataset['title'], ENT_QUOTES) . '</b>'
-					)
-				)
-			);
-		}
-
-		$table->setData($data);
-
-		$vars['table'] = $table->viewData(ee('CP/URL', 'addons/settings/'.HOP_NEW_RELIC_NAME.'/custom_datasets'));
-
-		$modal_vars = array(
-			'name'		=> 'modal-confirm-remove',
-			'form_url'	=> ee('CP/URL')->make('addons/settings/'.HOP_NEW_RELIC_NAME.'/custom_datasets_remove')
-		);
-		$modal_html = ee('View')->make('ee:_shared/modal_confirm_remove')->render($modal_vars);
-		ee('CP/Modal')->addModal('remove', $modal_html);
-
-		ee()->cp->add_js_script(array(
-			'file' => array('cp/confirm_remove'),
-		));
-
-		ee()->javascript->compile();
-
-		return array(
-			'heading'			=> lang('custom_datasets'),
-			'body'				=> ee('View')->make(HOP_NEW_RELIC_NAME.':custom_datasets')->render($vars),
-			'breadcrumb'		=> array(
-				ee('CP/URL', 'addons/settings/'.HOP_NEW_RELIC_NAME)->compile() => lang('hop_new_relic_module_name')
-			),
-		);
+		return ee()->load->view('custom_datasets', $vars, TRUE);
 	}
 
 	function new_custom_dataset()
@@ -463,9 +417,14 @@ class Hop_new_relic_mcp
 		$vars = array();
 
 		$vars['cp_page_title'] = lang('new_custom_datasets');
-		$vars['base_url'] = ee('CP/URL', 'addons/settings/'.HOP_NEW_RELIC_NAME.'/save_custom_dataset')->compile();
-		$vars['save_btn_text'] = lang('save');
-		$vars['save_btn_text_working'] = lang('saving');
+		$vars['action_url'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=save_custom_dataset';
+		$vars['form_hidden'] = NULL;
+		$vars['settings'] = array(
+			'custom_dataset_name'	=> '',
+			'custom_dataset_type'	=> '',
+			'app_metric_data'		=> '',
+			'server_metric_data'	=> '',
+		);
 
 		$selected_app = Hop_new_relic_settings_helper::get_selected_app();
 		$selected_server = Hop_new_relic_settings_helper::get_selected_server();
@@ -501,6 +460,7 @@ class Hop_new_relic_mcp
 				}
 
 				ksort($choices_app);
+				ksort($choices_app_details);
 				$vars['metric_values_app'] = $choices_app_details;
 			}
 			else
@@ -540,84 +500,16 @@ class Hop_new_relic_mcp
 			// If we get at least one list of metrics
 			if (array_key_exists('metric_names_app', $vars) || array_key_exists())
 			{
-				// EE Settings form
 				// The form to select metric data (for app or server) has 2 dropdowns, one to select the dataset metric name, 
 				//   the other to select the dataset metric value (which depends on the metric name selected)
 				//   so we're adding some js behind the scene to populate the 2nd dropdown field
 
-				// Load JS for field toggling
-				ee()->cp->add_js_script(array(
-					'file' => array('cp/form_group'),
-				));
 
-				$vars['sections'] = array(
-					array(
-						array(
-							'title' => 'custom_dataset_name',
-							'desc' => 'custom_dataset_name_desc',
-							'fields' => array(
-								'custom_dataset_name' => array('type' => 'text', 'value' => '')
-							)
-						),
-						array(
-							'title' => 'custom_dataset_type',
-							'desc' => 'custom_dataset_type_desc',
-							'fields' => array(
-								'metric_type' => array(
-									'type' => 'select',
-									'choices' => array(
-										'app' => lang('app'),
-										'server' => lang('server')
-									),
-									'group_toggle' => array(
-										'app' => 'app_options',
-										'server' => 'server_options'
-									),
-								)
-							)
-						),
-						array(
-							'title' => 'app_metric_data',
-							'desc' => 'app_metric_data_desc',
-							'group' => 'app_options',
-							'wide' => TRUE,
-							'fields' => array(
-								'custom_dataset_app_metric_name' => array('type' => 'select', 'choices' => $choices_app),
-								'custom_dataset_app_metric_value' => array('type' => 'select', 'choices' => array())
-							)
-						),
-						array(
-							'title' => 'server_metric_data',
-							'desc' => 'server_metric_data_desc',
-							'group' => 'server_options',
-							'wide' => TRUE,
-							'fields' => array(
-								'custom_dataset_server_metric_name' => array('type' => 'select', 'choices' => $choices_server),
-								'custom_dataset_server_metric_value' => array('type' => 'select', 'choices' => array())
-							)
-						),
-						// array(
-						// 	'title' => 'custom_dataset_unit',
-						// 	'desc' => 'twilio_from_number_desc',
-						// 	'fields' => array(
-						// 		'custom_dataset_unit' => array('type' => 'text', 'value' => '')
-						// 	)
-						// ),
-					),
-				);
 			}
-			
 		}
 
-		ee()->javascript->compile();
 
-		return array(
-			'heading'			=> lang('new_custom_datasets'),
-			'body'				=> ee('View')->make(HOP_NEW_RELIC_NAME.':new_custom_dataset')->render($vars),
-			'breadcrumb'		=> array(
-				ee('CP/URL', 'addons/settings/'.HOP_NEW_RELIC_NAME)->compile() => lang('hop_new_relic_module_name')
-			),
-		);
+		return ee()->load->view('new_custom_dataset', $vars, TRUE);
 	}
 
 	function save_custom_dataset()
@@ -636,7 +528,9 @@ class Hop_new_relic_mcp
 		}
 		else
 		{
-
+			// Do not save
+			ee()->session->set_flashdata('message_error', lang('error_no_metric_type_selected'));
+			ee()->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=new_custom_dataset');
 		}
 
 		$custom_set = array(
@@ -650,7 +544,7 @@ class Hop_new_relic_mcp
 
 		Hop_new_relic_settings_helper::add_user_dataset($custom_set);
 
-		ee()->functions->redirect(ee('CP/URL')->make('addons/settings/'.HOP_NEW_RELIC_NAME.'/custom_datasets'));
+		ee()->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=custom_datasets');
 	}
 
 	function custom_datasets_remove()
@@ -664,6 +558,6 @@ class Hop_new_relic_mcp
 			}
 		}
 
-		ee()->functions->redirect(ee('CP/URL')->make('addons/settings/'.HOP_NEW_RELIC_NAME.'/custom_datasets'));
+		ee()->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=custom_datasets');
 	}
 }

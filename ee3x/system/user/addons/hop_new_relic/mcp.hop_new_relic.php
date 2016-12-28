@@ -25,7 +25,6 @@ class Hop_new_relic_mcp
 		//Load JS
 		ee()->javascript->js->script(URL_THIRD_THEMES.HOP_NEW_RELIC_NAME.'/javascript/Chart.min.js');
 		ee()->javascript->js->script(URL_THIRD_THEMES.HOP_NEW_RELIC_NAME.'/javascript/script.js');
-
 	}
 
 	/**
@@ -592,6 +591,7 @@ class Hop_new_relic_mcp
 					}
 
 					ksort($choices_server);
+					ksort($choices_server_details);
 					$vars['metric_values_server'] = $choices_server_details;
 				}
 				else
