@@ -10,11 +10,11 @@ class Hop_new_relic {
 	
 	public function __construct()
 	{
-		$cache_ttl = intval(ee()->TMPL->fetch_param('ttl'));
+		$this->cache_ttl = intval(ee()->TMPL->fetch_param('ttl'));
 		// For speed and API purposes, limit the cache to 30sec minimum
-		if ($cache_ttl < 30)
+		if ($this->cache_ttl < 30)
 		{
-			$cache_ttl = 30;
+			$this->cache_ttl = 30;
 		}
 	}
 	
