@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once PATH_THIRD.'hop_new_relic/helper.php';
+require_once PATH_THIRD.'hop_new_relic/settings_helper.php';
 
 class Hop_new_relic {
 
@@ -24,8 +24,8 @@ class Hop_new_relic {
 	 */
 	public function app_data()
 	{
-		$serialized_selected_app = Hop_new_relic_helper::get_setting('nr_selected_app');
-		$api_key =  Hop_new_relic_helper::get_setting('nr_api_key');
+		$serialized_selected_app = Hop_new_relic_settings_helper::get_setting('nr_selected_app');
+		$api_key =  Hop_new_relic_settings_helper::get_setting('nr_api_key');
 		if ($serialized_selected_app != null && $api_key != null)
 		{
 			$selected_app = unserialize($serialized_selected_app);
@@ -68,8 +68,8 @@ class Hop_new_relic {
 	 */
 	public function server_data()
 	{
-		$serialized_selected_app = Hop_new_relic_helper::get_setting('nr_selected_app');
-		$api_key =  Hop_new_relic_helper::get_setting('nr_api_key');
+		$serialized_selected_app = Hop_new_relic_settings_helper::get_setting('nr_selected_app');
+		$api_key =  Hop_new_relic_settings_helper::get_setting('nr_api_key');
 		if ($serialized_selected_app != null && $api_key != null)
 		{
 			$selected_app = unserialize($serialized_selected_app);
@@ -95,7 +95,7 @@ class Hop_new_relic {
 				
 				if (isset($server_summary->summary->memory_used) && isset($server_summary->summary->memory_total))
 				{
-					$text .= ' ('.Hop_new_relic_helper::format_bytes($server_summary->summary->memory_used, 0).'/'.Hop_new_relic_helper::format_bytes($server_summary->summary->memory_total, 0).')';
+					$text .= ' ('.Hop_new_relic_settings_helper::format_bytes($server_summary->summary->memory_used, 0).'/'.Hop_new_relic_settings_helper::format_bytes($server_summary->summary->memory_total, 0).')';
 				}
 				
 				$text .= '</span> <span>'.$server_summary->summary->fullest_disk.' disk%</span>';
@@ -118,8 +118,8 @@ class Hop_new_relic {
 	 */
 	public function enduser_data()
 	{
-		$serialized_selected_app = Hop_new_relic_helper::get_setting('nr_selected_app');
-		$api_key =  Hop_new_relic_helper::get_setting('nr_api_key');
+		$serialized_selected_app = Hop_new_relic_settings_helper::get_setting('nr_selected_app');
+		$api_key =  Hop_new_relic_settings_helper::get_setting('nr_api_key');
 		if ($serialized_selected_app != null && $api_key != null)
 		{
 			$selected_app = unserialize($serialized_selected_app);
