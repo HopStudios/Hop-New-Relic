@@ -4,8 +4,7 @@ require_once PATH_THIRD.'hop_new_relic/config.php';
 require_once PATH_THIRD.'hop_new_relic/api/new_relic_api.php';
 
 /**
- * General Helper class for the add-on
- * 
+ * Helper class for handling the add-on settings
  */
 class Hop_new_relic_settings_helper
 {
