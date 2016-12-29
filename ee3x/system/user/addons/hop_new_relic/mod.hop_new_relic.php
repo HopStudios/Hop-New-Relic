@@ -95,7 +95,7 @@ class Hop_new_relic {
 
 				if (isset($server_summary->summary->memory_used) && isset($server_summary->summary->memory_total))
 				{
-					$text .= ' ('.Hop_new_relic_settings_helper::format_bytes($server_summary->summary->memory_used, 0).'/'.Hop_new_relic_settings_helper::format_bytes($server_summary->summary->memory_total, 0).')';
+					$text .= ' ('.Hop_new_relic_data_helper::format_bytes($server_summary->summary->memory_used, 0).'/'.Hop_new_relic_data_helper::format_bytes($server_summary->summary->memory_total, 0).')';
 				}
 
 				$text .= '</span> <span>'.$server_summary->summary->fullest_disk.' disk%</span>';

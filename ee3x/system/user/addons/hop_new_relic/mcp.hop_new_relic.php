@@ -63,11 +63,11 @@ class Hop_new_relic_mcp
 					$vars['server'] = $server_summary;
 					if (isset($server_summary->summary->memory_used))
 					{
-						$vars['server_memory_used'] = Hop_new_relic_settings_helper::format_bytes($server_summary->summary->memory_used, 0);
+						$vars['server_memory_used'] = Hop_new_relic_data_helper::format_bytes($server_summary->summary->memory_used, 0);
 					}
 					if (isset($server_summary->summary->memory_total))
 					{
-						$vars['server_memory_total'] = Hop_new_relic_settings_helper::format_bytes($server_summary->summary->memory_total, 0);
+						$vars['server_memory_total'] = Hop_new_relic_data_helper::format_bytes($server_summary->summary->memory_total, 0);
 					}
 				}
 				else

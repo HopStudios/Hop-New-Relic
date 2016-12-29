@@ -390,7 +390,7 @@ class Hop_new_relic_data_helper
 				if ($smallest > 1073741824)
 				{
 					// Convert all in Gb
-					$data_set->data = Hop_new_relic_settings_helper::divider_conversion($data_set->data, 1073741824, 2);
+					$data_set->data = self::divider_conversion($data_set->data, 1073741824, 2);
 					if ($predefined_data_details['unit'] == 'bytes' || $predefined_data_details['unit'] == 'byte')
 					{
 						$data_set->label .= ' (Gb)';
@@ -404,7 +404,7 @@ class Hop_new_relic_data_helper
 				else if ($smallest > 1048576)
 				{
 					// Convert all in Mb
-					$data_set->data = Hop_new_relic_settings_helper::divider_conversion($data_set->data, 1048576, 2);
+					$data_set->data = self::divider_conversion($data_set->data, 1048576, 2);
 					if ($predefined_data_details['unit'] == 'bytes' || $predefined_data_details['unit'] == 'byte')
 					{
 						$data_set->label .= ' (Mb)';
@@ -417,7 +417,7 @@ class Hop_new_relic_data_helper
 				else if ($smallest > 1024)
 				{
 					// Convert all in Kb
-					$data_set->data = Hop_new_relic_settings_helper::divider_conversion($data_set->data, 1024, 2);
+					$data_set->data = self::divider_conversion($data_set->data, 1024, 2);
 					if ($predefined_data_details['unit'] == 'bytes' || $predefined_data_details['unit'] == 'byte')
 					{
 						$data_set->label .= ' (Kb)';
@@ -434,6 +434,54 @@ class Hop_new_relic_data_helper
 		$data_graph->datasets[] = $data_set;
 		$data_graph->labels = $labels;
 		return $data_graph;
+	}
+
+	/**
+	 * Helper function to convert bytes into a human readable value
+	 * @param  [type]  $bytes	 [description]
+	 * @param  integer $precision [description]
+	 * @return [type]			 [description]
+	 */
+	public static function format_bytes($size, $precision = 2)
+	{
+		$base = log($size, 1024);
+		$suffixes = array('', 'kB', 'MB', 'GB', 'TB');
+
+		return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
+	}
+
+	/**
+	 * Helper function to convert a number or an array of numbers
+	 * @param number|array $data      The data to convert
+	 * @param number       $divider   The number to divide the origin data by
+	 * @param int          $precision {optionnal) The precision to round the number to
+	 */
+	public static function divider_conversion($data, $divider, $precision = NULL)
+	{
+		if (is_array($data))
+		{
+			$results = array();
+			foreach($data as $value)
+			{
+				$result = $value / $divider;
+				if ($precision != NULL)
+				{
+					$result = round($result, $precision);
+				}
+				$results[] = $result;
+			}
+
+			return $results;
+		}
+		else
+		{
+			$result = $value / $divider;
+			if ($precision != NULL)
+			{
+				$result = round($result, $precision);
+			}
+			return $result;
+		}
 	}
 
 }
