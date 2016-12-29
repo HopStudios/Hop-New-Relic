@@ -26,19 +26,20 @@ class Hop_new_relic_upd {
 		//Create our tables
 
 		$fields = array(
-			'setting_name'   => array('type' => 'VARCHAR', 'constraint' => '100'),
-			'setting_value'  => array('type' => 'TEXT')
+			'id'	=> array('type' => 'INT', 'constraint' => '10', 'unsigned' => TRUE, 'auto_increment' => TRUE),
+			'name'	=> array('type' => 'VARCHAR', 'constraint' => '100'),
+			'value'	=> array('type' => 'TEXT')
 		);
 
 		ee()->dbforge->add_field($fields);
-		ee()->dbforge->add_key('setting_name', TRUE);
+		ee()->dbforge->add_key('id', TRUE);
+		ee()->dbforge->add_key('name');
 
 		ee()->dbforge->create_table(HOP_NEW_RELIC_NAME.'_settings');
 
 		unset($fields);
 
-		//Save settings (the default ones will be stored)
-		Hop_new_relic_settings_helper::save_settings();
+		Hop_new_relic_settings_helper::save_default_settings();
 
 		return TRUE;
 	}
@@ -63,13 +64,8 @@ class Hop_new_relic_upd {
 		ee()->db->where('class', HOP_NEW_RELIC_NAME);
 		ee()->db->delete('actions');
 
-		//Uninstall our tables here
+		//Uninstall our tables
 		ee()->dbforge->drop_table(HOP_NEW_RELIC_NAME.'_settings');
-		//ee()->dbforge->drop_table('download_posts');
-
-		// Required if your module includes fields on the publish page
-		//ee()->load->library('layout');
-		//ee()->layout->delete_layout_tabs($this->tabs(), 'download');
 
 		return TRUE;
 	}

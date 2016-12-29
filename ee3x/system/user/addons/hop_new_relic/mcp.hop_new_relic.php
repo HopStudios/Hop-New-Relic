@@ -137,7 +137,7 @@ class Hop_new_relic_mcp
 			}
 		}
 
-		$settings_db = Hop_new_relic_settings_helper::get_settings();
+		$settings_db = Hop_new_relic_settings_helper::get_settings_as_array();
 
 		if (ee()->input->post('action') == "save_settings")
 		{

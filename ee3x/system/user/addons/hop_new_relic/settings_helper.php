@@ -9,9 +9,6 @@ require_once PATH_THIRD.'hop_new_relic/api/new_relic_api.php';
  */
 class Hop_new_relic_settings_helper
 {
-	private static $_settings_table_name = "hop_new_relic_settings";
-	private static $_settings;
-
 	/**
 	 * Get array with default settings
 	 * @return array Settings
@@ -19,7 +16,7 @@ class Hop_new_relic_settings_helper
 	private static function _get_default_settings()
 	{
 		return array(
-			'nr_api_key'						=> '',
+			'nr_api_key'						=> '', // The API Key from New Relic
 			'nr_apps_list'						=> '', // The apps list associated with the account
 			'nr_selected_app_servers'			=> '', // The servers from the selected app
 			'user_datasets'						=> '', // Saved user datasets
@@ -27,23 +24,30 @@ class Hop_new_relic_settings_helper
 	}
 
 	/**
-	 * Get settings saved into DB; if no settings found, get default ones.
-	 * @return array Settings
+	 * Get settings saved into DB
+	 * @return Collection Settings
 	 */
 	public static function get_settings()
 	{
-		if (! isset(self::$_settings) || self::$_settings == null)
+		$settings = ee('Model')->get('hop_new_relic:Hnp_settings')->all();
+		return $settings;
+	}
+
+	/**
+	 * Get settings saved into DB as an array[setting_name] = setting_value
+	 * @return array settings
+	 */
+	public static function get_settings_as_array()
+	{
+		$settings = self::get_settings();
+		$_settings = array();
+
+		foreach ($settings as $setting)
 		{
-			$settings = array();
-			//Get the actual saved settings
-			$query = ee()->db->get(self::$_settings_table_name);
-			foreach ($query->result_array() as $row)
-			{
-				$settings[$row["setting_name"]] = $row["setting_value"];
-			}
-			self::$_settings = array_merge(self::_get_default_settings(), $settings);
+			$_settings[$setting->name] = $setting->value;
 		}
-		return self::$_settings;
+
+		return $_settings;
 	}
 
 	/**
@@ -53,16 +57,12 @@ class Hop_new_relic_settings_helper
 	 */
 	public static function get_setting($setting_name)
 	{
-		if (! isset(self::$_settings))
+		$setting = ee('Model')->get('hop_new_relic:Hnp_settings')->filter('name', $setting_name)->first();
+		if ($setting)
 		{
-			//Load the settings from DB if not already done
-			self::get_settings();
+			return $setting->value;
 		}
-		if (array_key_exists($setting_name, self::$_settings))
-		{
-			return self::$_settings[$setting_name];
-		}
-		return null;
+		return NULL;
 	}
 
 	/**
@@ -157,49 +157,61 @@ class Hop_new_relic_settings_helper
 	}
 
 	/**
+	 * Create default settings objects and save them into db
+	 * If the setting already exists, it won't be saved
+	 * @return void
+	 */
+	public static function save_default_settings()
+	{
+		foreach (self::_get_default_settings() as $setting_name => $setting_value)
+		{
+			$setting = ee('Model')->make('hop_new_relic:Hnp_settings', array('name' => $setting_name));
+			$result = $setting->validate();
+			if ($result->isValid())
+			{
+				$setting->save();
+			}
+		}
+	}
+
+	/**
 	 * Save Add-on settings into database
 	 * @param  array  $settings [description]
 	 * @return array			[description]
 	 */
 	public static function save_settings($settings = array())
 	{
-		//be sure to save all settings possible
-		$_tmp_settings = array_merge(self::_get_default_settings(), $settings);
-		//No way to do INSERT IF NOT EXISTS so...
-		foreach ($_tmp_settings as $setting_name => $setting_value)
+		foreach ($settings as $setting_name => $setting_value)
 		{
-			$query = ee()->db->get_where(self::$_settings_table_name, array('setting_name'=>$setting_name), 1, 0);
-			if ($query->num_rows() == 0) {
-			  // A record does not exist, insert one.
-			  $query = ee()->db->insert(self::$_settings_table_name, array('setting_name' => $setting_name, 'setting_value' => $setting_value));
-			} else {
-			  // A record does exist, update it.
-			  $query = ee()->db->update(self::$_settings_table_name, array('setting_value' => $setting_value), array('setting_name'=>$setting_name));
-			}
+			self::save_setting($setting_name, $setting_value);
 		}
-		self::$_settings = $_tmp_settings;
 	}
 
 	/**
 	 * Save a single setting into database (will override if exists)
-	 * @param  [type] $setting_name  [description]
-	 * @param  [type] $setting_value [description]
-	 * @return [type]				[description]
+	 * @param  string	$setting_name	The setting name to save
+	 * @param  string	$setting_value	The setting value
+	 * @return bool						True if setting saved, false otherwise
 	 */
 	public static function save_setting($setting_name, $setting_value)
 	{
-		$query = ee()->db->get_where(self::$_settings_table_name, array('setting_name'=>$setting_name), 1, 0);
-		if ($query->num_rows() == 0) {
-		  // A record does not exist, insert one.
-		  $query = ee()->db->insert(self::$_settings_table_name, array('setting_name' => $setting_name, 'setting_value' => $setting_value));
-		} else {
-		  // A record does exist, update it.
-		  $query = ee()->db->update(self::$_settings_table_name, array('setting_value' => $setting_value), array('setting_name'=>$setting_name));
+		$setting = ee('Model')->get('hop_new_relic:Hnp_settings')->filter('name', $setting_name)->first();
+		if ($setting)
+		{
+			$setting->value = $setting_value;
+		}
+		else
+		{
+			$setting = ee('Model')->make('hop_new_relic:Hnp_settings', array('name' => $setting_name, 'value' => $setting_value));
 		}
 
-		//Refresh our local copy of the settings
-		self::$_settings = null;
-		self::get_settings();
+		$result = $setting->validate();
+		if ($result->isValid())
+		{
+			$setting->save();
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 	/**
