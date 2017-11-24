@@ -21,3 +21,7 @@
 
 .chart-container .form { border: 0; margin: 15px; }
 #nr-data-error { display: none; }
+
+.box-new-dataset .nr-error {
+	margin: 10px 15px;
+}
