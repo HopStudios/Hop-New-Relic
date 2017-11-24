@@ -19,5 +19,5 @@
 .nr-num-data { font-size: 14px; }
 .nr-num-data span { font-size: 20px; }
 
-.chart-container .form { margin: 15px; }
+.chart-container .form { border: 0; margin: 15px; }
 #nr-data-error { display: none; }
