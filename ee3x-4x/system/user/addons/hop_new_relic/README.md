@@ -1,16 +1,43 @@
-# Hop New Relic - A New Relic addon for ExpressionEngine CMS
+# Hop New Relic
 
-Are you trying to figure out where a bottleneck is in your site's performance? Maybe you'd like to see how your server load is doing today. Well, now you can access any New Relic data directly from your EE control panel. See stats like Server CPU Usage, Average Server Load, Enduser Network Time, and more. And you can output the graphs in regular teplates asa well, if you want to make your own admin dashboard. Available for EE2 and EE3. 
+## Setup
 
-If you want to use it, please buy it. :) [Devot-ee](https://devot-ee.com/add-ons/hop-new-relic)
+* Login to your New Relic account on [https://newrelic.com](https://newrelic.com)
+* Once logged-ed, go to your *account settings*. In the left sidebar menu, go to *API Keys*
+* Copy your API key (generate one if you don't have any)
+* Back to EE, go to Hop New Relic add-on settings and paste your New Relic API key. Save the settings
+* Now that the key is saved, the *New Relic App* dropdown should be populated, select an app and save the settings
+* Now that the app is saved, the *New Relic Server* dropdown should be populated, select one and save the settings (if it's already selected, save the settings anyway)
+* Go back to the add-on main page, it should display the app and server summary data
 
-## Documentation
 
-[More information, how to use...](ee3x-4x/system/user/addons/hop_new_relic/README.md)
+## Usage
 
-## Want more ?
+If you ever need to display the data summary on the front-end, the add-on provides 3 tags for that:
 
-Take a look at our [ExpressionEngine Add-Ons](http://www.hopstudios.com/software)
+* *{exp:hop_new_relic:app_data ttl="300"}*
+* *{exp:hop_new_relic:server_data ttl="300"}*
+* *{exp:hop_new_relic:enduser_data ttl="300"}*
+
+The *ttl* parameter is optionnary, it represents the time (in seconds) the data will be kept in cache before being refreshed. The minimum value is 30 seconds. The default value is 300.
+
+A tag will generate something like `<span>111 ms</span> <span>131 rpm</span> <span>0 err%</span> <span>apdex 0.99</span>`. It's up to you to put-in in a `div` and style it the way you want.
+
+## Support
+
+Having issues ? Found a bug ? Suggestions ? Contact us at [tech@hopstudios.com](mailto:tech@hopstudios.com)
+
+
+## Changelog
+
+### 1.0.1
+
+* Changes for EE4
+* Bug fix in custom datasets
+
+### 1.0.0
+
+* Initial Release
 
 ## License
 Updated: Jan. 6, 2009
@@ -56,7 +83,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMP
 #### Limitations Of Liability
 
 YOU ASSUME ALL RISK ASSOCIATED WITH THE INSTALLATION AND USE OF THE SOFTWARE. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS OF THE SOFTWARE BE LIABLE FOR CLAIMS, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE. LICENSE HOLDERS ARE SOLELY RESPONSIBLE FOR DETERMINING THE APPROPRIATENESS OF USE AND ASSUME ALL RISKS ASSOCIATED WITH ITS USE, INCLUDING BUT NOT LIMITED TO THE RISKS OF PROGRAM ERRORS, DAMAGE TO EQUIPMENT, LOSS OF DATA OR SOFTWARE PROGRAMS, OR UNAVAILABILITY OR INTERRUPTION OF OPERATIONS.
-
-## Third party lib
-
-[https://github.com/chartjs/Chart.js](https://github.com/chartjs/Chart.js) - Thanks to them !
