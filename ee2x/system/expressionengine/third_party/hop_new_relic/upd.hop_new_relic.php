@@ -76,9 +76,7 @@ class Hop_new_relic_upd {
 
 	function update($current = '')
 	{
-		ee()->load->dbforge();
-
-		if (version_compare($current, '1.0', '='))
+		if (version_compare($current, $this->version, '='))
 		{
 			return FALSE;
 		}
