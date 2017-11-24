@@ -13,7 +13,7 @@ class Hop_new_relic_mcp
 		ee()->cp->set_right_nav(array(
 			lang('hop_new_relic_module_name')	=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME,
 			lang('settings')					=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=settings',
-			lang('custom_datasets')				=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=custom_datasets',
+			// lang('custom_datasets')				=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module='.HOP_NEW_RELIC_NAME.AMP.'method=custom_datasets',
 		));
 
 		//Load our magnificent CSS
