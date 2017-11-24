@@ -442,7 +442,11 @@ class Hop_new_relic_mcp
 			$nr_api = new New_Relic_Api($nr_api_key);
 			$metric_names = $nr_api->get_app_metric_names($selected_app->id);
 
-			if ($metric_names != NULL)
+			if (is_object($metric_names) && isset($metric_names->error))
+			{
+				$vars['metric_names_app_error'] = 'API Error - '.lang('get_metric_names_app_error').': '.$metric_names->error->title;
+			}
+			elseif ($metric_names != NULL)
 			{
 				$vars['metric_names_app'] = $metric_names;
 
@@ -473,7 +477,11 @@ class Hop_new_relic_mcp
 				// Get the metric names available for the selected server
 				$metric_names_serv = $nr_api->get_server_metric_names($selected_server->id);
 
-				if ($metric_names_serv != NULL)
+				if (is_object($metric_names_serv) && isset($metric_names_serv->error))
+				{
+					$vars['metric_names_server_error'] = 'API Error - '.lang('get_metric_names_server_error').': '.$metric_names_serv->error->title;
+				}
+				elseif ($metric_names_serv != NULL)
 				{
 					$vars['metric_names_server'] = $metric_names_serv;
 
@@ -498,13 +506,13 @@ class Hop_new_relic_mcp
 			}
 
 			// If we get at least one list of metrics
-			if (array_key_exists('metric_names_app', $vars) || array_key_exists())
+			if (array_key_exists('metric_names_app', $vars) || array_key_exists('metric_names_server', $vars))
 			{
 				// The form to select metric data (for app or server) has 2 dropdowns, one to select the dataset metric name, 
 				//   the other to select the dataset metric value (which depends on the metric name selected)
 				//   so we're adding some js behind the scene to populate the 2nd dropdown field
 
-
+				// TODO: add metric names app and metric names server to the form
 			}
 		}
 
