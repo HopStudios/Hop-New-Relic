@@ -77,10 +77,6 @@ class New_Relic_Api
 			$data = json_decode($data);
 			// print_r($data);
 
-			if (isset($data->error))
-			{
-				return $data;
-			}
 			return $data->metrics;
 		}
 		return null;
@@ -213,10 +209,6 @@ class New_Relic_Api
 			$data = json_decode($data);
 			// print_r($data);
 
-			if (isset($data->error))
-			{
-				return $data;
-			}
 			return $data->metrics;
 		}
 		return null;

@@ -8,11 +8,11 @@
  * @author		Louis Dekeister (Hop Studios)
  * @copyright	Copyright (c) 2015, Hop Studios, Inc.
  * @link		http://www.hopstudios.com/software
- * @version		1.0.1
+ * @version		1.0
  * @filesource	hop_new_relic/config.php
  */
 $config['name']		= 'Hop New Relic';
-$config['version']	= '1.0.1';
+$config['version']	= '1.0';
 $config['nsm_addon_updater']['versions_xml']='http://www.hopstudios.com/software/versions/?';
 
 // Version constant

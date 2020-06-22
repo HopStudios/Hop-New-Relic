@@ -63,11 +63,11 @@ class Hop_new_relic_mcp
 					$vars['server'] = $server_summary;
 					if (isset($server_summary->summary->memory_used))
 					{
-						$vars['server_memory_used'] = Hop_new_relic_data_helper::format_bytes($server_summary->summary->memory_used, 0);
+						$vars['server_memory_used'] = Hop_new_relic_settings_helper::format_bytes($server_summary->summary->memory_used, 0);
 					}
 					if (isset($server_summary->summary->memory_total))
 					{
-						$vars['server_memory_total'] = Hop_new_relic_data_helper::format_bytes($server_summary->summary->memory_total, 0);
+						$vars['server_memory_total'] = Hop_new_relic_settings_helper::format_bytes($server_summary->summary->memory_total, 0);
 					}
 				}
 				else
@@ -137,7 +137,7 @@ class Hop_new_relic_mcp
 			}
 		}
 
-		$settings_db = Hop_new_relic_settings_helper::get_settings_as_array();
+		$settings_db = Hop_new_relic_settings_helper::get_settings();
 
 		if (ee()->input->post('action') == "save_settings")
 		{
@@ -545,11 +545,7 @@ class Hop_new_relic_mcp
 			$nr_api = new New_Relic_Api($nr_api_key);
 			$metric_names = $nr_api->get_app_metric_names($selected_app->id);
 
-			if (is_object($metric_names) && isset($metric_names->error))
-			{
-				$vars['metric_names_app_error'] = 'API Error - '.lang('get_metric_names_app_error').': '.$metric_names->error->title;
-			}
-			elseif ($metric_names != NULL)
+			if ($metric_names != NULL)
 			{
 				$vars['metric_names_app'] = $metric_names;
 
@@ -579,11 +575,7 @@ class Hop_new_relic_mcp
 				// Get the metric names available for the selected server
 				$metric_names_serv = $nr_api->get_server_metric_names($selected_server->id);
 
-				if (is_object($metric_names_serv) && isset($metric_names_serv->error))
-				{
-					$vars['metric_names_server_error'] = 'API Error - '.lang('get_metric_names_server_error').': '.$metric_names_serv->error->title;
-				}
-				elseif ($metric_names_serv != NULL)
+				if ($metric_names_serv != NULL)
 				{
 					$vars['metric_names_server'] = $metric_names_serv;
 
@@ -609,7 +601,7 @@ class Hop_new_relic_mcp
 			}
 
 			// If we get at least one list of metrics
-			if (array_key_exists('metric_names_app', $vars) || array_key_exists('metric_names_server', $vars))
+			if (array_key_exists('metric_names_app', $vars) || array_key_exists())
 			{
 				// EE Settings form
 				// The form to select metric data (for app or server) has 2 dropdowns, one to select the dataset metric name, 
